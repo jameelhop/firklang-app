@@ -42,6 +42,26 @@
     <div id="root"></div>
 
     <script>
+      /*
+        Chrome paa Android viser IKKE laengere en installationsbanner af sig
+        selv - den blev fjernet for flere aar siden. Uden en egen knap skal
+        brugeren selv finde menupunktet, og det goer ingen.
+
+        Haendelsen fires meget tidligt, ofte foer app-bundlet er indlaest.
+        Derfor fanges den her i HTML'en og gemmes, saa React kan bruge den
+        naar den er klar.
+      */
+      window.__firklangInstall = null;
+      window.addEventListener("beforeinstallprompt", function (e) {
+        e.preventDefault();
+        window.__firklangInstall = e;
+        window.dispatchEvent(new Event("firklang-kan-installeres"));
+      });
+      window.addEventListener("appinstalled", function () {
+        window.__firklangInstall = null;
+        window.dispatchEvent(new Event("firklang-installeret"));
+      });
+
       // Registreres først efter load, så den ikke konkurrerer med
       // den første tegning af lysfeltet.
       if ("serviceWorker" in navigator) {
@@ -53,6 +73,6 @@
         });
       }
     </script>
-  <script src="/firklang-app/_expo/static/js/web/index-2bc444c601cf70c213efa4d53125bf0e.js" defer></script>
+  <script src="/firklang-app/_expo/static/js/web/index-8cce055364384102c6159eb72a9dbb0b.js" defer></script>
 </body>
 </html>
