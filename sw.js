@@ -13,7 +13,11 @@
  *   - navigation forsøger nettet FØRST, så en ny version altid opdages
  *   - skipWaiting + clients.claim, så en ny worker tager over med det samme
  */
-const CACHE_VERSION = "firklang-v1";
+// Saettes automatisk af scripts/stempl-sw.mjs efter hver eksport, udledt af
+// bundtets hash. Aendrer den sig ikke, opdager browseren aldrig at der findes
+// en ny service worker - det var praecis fejlen der pinnede brugere til
+// den version de foerst hentede.
+const CACHE_VERSION = "firklang-b5dced197b3d";
 
 const SKAL = [
   "./",

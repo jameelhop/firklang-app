@@ -1,4 +1,5 @@
 {
+  "id": "/firklang-app/",
   "name": "firklang",
   "short_name": "firklang",
   "description": "Én lille ting ad gangen, fra det felt der har været koldest.",
@@ -10,7 +11,10 @@
   "orientation": "portrait",
   "background_color": "#0C0908",
   "theme_color": "#0C0908",
-  "categories": ["health", "lifestyle"],
+  "categories": [
+    "health",
+    "lifestyle"
+  ],
   "icons": [
     {
       "src": "./icon-192.png",
