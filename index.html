@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+    <!-- viewport-fit=cover, så det varme sorte går helt ud i kanten på iPhone -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
+    />
+    <title>firklang</title>
+    <meta name="description" content="Én lille ting ad gangen, fra det felt der har været koldest." />
+
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#0C0908" />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- iOS installerer ikke fra manifest alene. -->
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="firklang" />
+    <link rel="icon" href="./favicon.ico" />
+
+    <style id="expo-reset">
+      /* Bunden sættes her, så der ikke er et hvidt glimt før bundtet er indlæst.
+         Appen taler om aftenlys og må aldrig blinke hvidt. */
+      html, body { height: 100%; background-color: #0C0908; }
+      body { overflow: hidden; margin: 0; }
+      #root {
+        display: flex;
+        height: 100%;
+        flex: 1;
+        background-color: #0C0908;
+      }
+    </style>
+  <meta name="theme-color" content="#0C0908">
+<meta name="description" content="Én lille ting ad gangen, fra det felt der har været koldest.">
+<link rel="icon" href="/firklang-app/favicon.ico"/></head>
+
+  <body>
+    <div id="root"></div>
+
+    <script>
+      // Registreres først efter load, så den ikke konkurrerer med
+      // den første tegning af lysfeltet.
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function () {
+          navigator.serviceWorker.register("./sw.js").catch(function () {
+            // Ingen service worker betyder ingen offline-tilstand.
+            // Appen virker stadig — den skal bare have net.
+          });
+        });
+      }
+    </script>
+  <script src="/firklang-app/_expo/static/js/web/index-11242b1a8349e279d748a2e24567bfcb.js" defer></script>
+</body>
+</html>
