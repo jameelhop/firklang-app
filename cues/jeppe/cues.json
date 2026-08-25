@@ -1,0 +1,352 @@
+{
+ "cueSetId": "v0-ai-jeppe",
+ "genereretISO": "2026-08-25T09:09:02.222377Z",
+ "stemme": "da-DK-JeppeNeural",
+ "disclosure": "Stemmen er computergenereret.",
+ "cues": [
+  {
+   "id": "ind-x-1",
+   "key": "ind",
+   "variant": 1,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_ind_01.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ind-x-2",
+   "key": "ind",
+   "variant": 2,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_ind_02.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ind-x-3",
+   "key": "ind",
+   "variant": 3,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_ind_03.m4a",
+   "durationMs": 1710
+  },
+  {
+   "id": "ind-x-4",
+   "key": "ind",
+   "variant": 4,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_ind_04.m4a",
+   "durationMs": 1710
+  },
+  {
+   "id": "ind_naese-x-1",
+   "key": "ind_naese",
+   "variant": 1,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_ind_naese_01.m4a",
+   "durationMs": 2029
+  },
+  {
+   "id": "ind_naese-x-2",
+   "key": "ind_naese",
+   "variant": 2,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_ind_naese_02.m4a",
+   "durationMs": 2029
+  },
+  {
+   "id": "ud-short-1",
+   "key": "ud",
+   "variant": 1,
+   "lengthClass": "short",
+   "audioPath": "cues/jeppe/breath_cue_ud_kort_01.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ud-short-2",
+   "key": "ud",
+   "variant": 2,
+   "lengthClass": "short",
+   "audioPath": "cues/jeppe/breath_cue_ud_kort_02.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ud-short-3",
+   "key": "ud",
+   "variant": 3,
+   "lengthClass": "short",
+   "audioPath": "cues/jeppe/breath_cue_ud_kort_03.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ud-short-4",
+   "key": "ud",
+   "variant": 4,
+   "lengthClass": "short",
+   "audioPath": "cues/jeppe/breath_cue_ud_kort_04.m4a",
+   "durationMs": 1600
+  },
+  {
+   "id": "ud-medium-1",
+   "key": "ud",
+   "variant": 1,
+   "lengthClass": "medium",
+   "audioPath": "cues/jeppe/breath_cue_ud_mellem_01.m4a",
+   "durationMs": 1600
+  },
+  {
+   "id": "ud-medium-2",
+   "key": "ud",
+   "variant": 2,
+   "lengthClass": "medium",
+   "audioPath": "cues/jeppe/breath_cue_ud_mellem_02.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ud-medium-3",
+   "key": "ud",
+   "variant": 3,
+   "lengthClass": "medium",
+   "audioPath": "cues/jeppe/breath_cue_ud_mellem_03.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ud-medium-4",
+   "key": "ud",
+   "variant": 4,
+   "lengthClass": "medium",
+   "audioPath": "cues/jeppe/breath_cue_ud_mellem_04.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ud-long-1",
+   "key": "ud",
+   "variant": 1,
+   "lengthClass": "long",
+   "audioPath": "cues/jeppe/breath_cue_ud_lang_01.m4a",
+   "durationMs": 1600
+  },
+  {
+   "id": "ud-long-2",
+   "key": "ud",
+   "variant": 2,
+   "lengthClass": "long",
+   "audioPath": "cues/jeppe/breath_cue_ud_lang_02.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ud-long-3",
+   "key": "ud",
+   "variant": 3,
+   "lengthClass": "long",
+   "audioPath": "cues/jeppe/breath_cue_ud_lang_03.m4a",
+   "durationMs": 1600
+  },
+  {
+   "id": "ud-long-4",
+   "key": "ud",
+   "variant": 4,
+   "lengthClass": "long",
+   "audioPath": "cues/jeppe/breath_cue_ud_lang_04.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ud_alt-x-1",
+   "key": "ud_alt",
+   "variant": 1,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_ud_alt_01.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ud_alt-x-2",
+   "key": "ud_alt",
+   "variant": 2,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_ud_alt_02.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ud_alt-x-3",
+   "key": "ud_alt",
+   "variant": 3,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_ud_alt_03.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ud_alt-x-1",
+   "key": "ud_alt",
+   "variant": 1,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_ud_alt_01.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ud_alt-x-2",
+   "key": "ud_alt",
+   "variant": 2,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_ud_alt_02.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ud_alt-x-3",
+   "key": "ud_alt",
+   "variant": 3,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_ud_alt_03.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ud_alt-x-1",
+   "key": "ud_alt",
+   "variant": 1,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_ud_alt_01.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ud_alt-x-2",
+   "key": "ud_alt",
+   "variant": 2,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_ud_alt_02.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ud_alt-x-3",
+   "key": "ud_alt",
+   "variant": 3,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_ud_alt_03.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "ud_laengere-x-1",
+   "key": "ud_laengere",
+   "variant": 1,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_ud_laengere_01.m4a",
+   "durationMs": 2070
+  },
+  {
+   "id": "ud_laengere-x-2",
+   "key": "ud_laengere",
+   "variant": 2,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_ud_laengere_02.m4a",
+   "durationMs": 2070
+  },
+  {
+   "id": "ud_laengere-x-3",
+   "key": "ud_laengere",
+   "variant": 3,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_ud_laengere_03.m4a",
+   "durationMs": 2070
+  },
+  {
+   "id": "fortsaet-x-1",
+   "key": "fortsaet",
+   "variant": 1,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_fortsaet_01.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "fortsaet-x-2",
+   "key": "fortsaet",
+   "variant": 2,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_fortsaet_02.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "fortsaet-x-3",
+   "key": "fortsaet",
+   "variant": 3,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_fortsaet_03.m4a",
+   "durationMs": 1790
+  },
+  {
+   "id": "fortsaet-x-4",
+   "key": "fortsaet",
+   "variant": 4,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_fortsaet_04.m4a",
+   "durationMs": 1620
+  },
+  {
+   "id": "langsommere-x-1",
+   "key": "langsommere",
+   "variant": 1,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_langsommere_01.m4a",
+   "durationMs": 2280
+  },
+  {
+   "id": "langsommere-x-2",
+   "key": "langsommere",
+   "variant": 2,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_langsommere_02.m4a",
+   "durationMs": 2280
+  },
+  {
+   "id": "langsommere-x-3",
+   "key": "langsommere",
+   "variant": 3,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_langsommere_03.m4a",
+   "durationMs": 2280
+  },
+  {
+   "id": "sidste-x-1",
+   "key": "sidste",
+   "variant": 1,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_sidste_01.m4a",
+   "durationMs": 1830
+  },
+  {
+   "id": "sidste-x-2",
+   "key": "sidste",
+   "variant": 2,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_sidste_02.m4a",
+   "durationMs": 1830
+  },
+  {
+   "id": "slut-x-1",
+   "key": "slut",
+   "variant": 1,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_slut_01.m4a",
+   "durationMs": 2029
+  },
+  {
+   "id": "slut-x-2",
+   "key": "slut",
+   "variant": 2,
+   "lengthClass": null,
+   "audioPath": "cues/jeppe/breath_cue_slut_02.m4a",
+   "durationMs": 2029
+  }
+ ],
+ "introer": [
+  {
+   "id": "intro-femminutter",
+   "audioPath": "cues/jeppe/breath_intro_femminutter.m4a",
+   "durationMs": 24660
+  },
+  {
+   "id": "intro-foersoevn",
+   "audioPath": "cues/jeppe/breath_intro_foersoevn.m4a",
+   "durationMs": 20860
+  }
+ ],
+ "roomtone": {
+  "audioPath": "cues/jeppe/roomtone.m4a",
+  "durationMs": 3000
+ }
+}
