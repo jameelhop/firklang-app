@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "opdateretISO": "2026-08-25",
+  "ranking": {
+    "explorationFloorEveryN": 5,
+    "prefWeightMin": 0.5,
+    "prefWeightMax": 1.5,
+    "secondaryFieldMaxEffect": 0.25
+  },
+  "varme": {
+    "dailyCapPerField": 0.42,
+    "contributionPerLog": 0.18,
+    "decayDays": 7
+  },
+  "feltvalg": {
+    "coldFieldFromDay": 8
+  },
+  "checkin": {
+    "askFromDay": 3,
+    "freshForMinutes": 90,
+    "giveUpAfterSkips": 3
+  }
+}
