@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="da">
   <head>
+    <!--
+      Basen goer alle relative stier (./sw.js, ./recipes.json, ./cues/...)
+      uafhaengige af om siden aabnes med eller uden skraastreg. Noedvendigt
+      fordi hopland.dk-proxyen normaliserer /firklang-app/ til /firklang-app,
+      og en relativ sti derfra ellers ville ramme domaenets rod.
+      Saettes dynamisk, saa en lokal dev-server i roden stadig virker.
+    -->
+    <script>
+      (function () {
+        var b = document.createElement("base");
+        b.href = location.pathname.indexOf("/firklang-app") === 0 ? "/firklang-app/" : "/";
+        document.head.appendChild(b);
+      })();
+    </script>
     <meta charset="utf-8" />
     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
     <!-- viewport-fit=cover, så det varme sorte går helt ud i kanten på iPhone -->
