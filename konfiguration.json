@@ -19,5 +19,12 @@
     "askFromDay": 3,
     "freshForMinutes": 90,
     "giveUpAfterSkips": 3
+  },
+  "cue": {
+    "densityBothUntilBreath": 999,
+    "densityExhaleUntilBreath": 999,
+    "densityOccasionalEveryN": 4,
+    "cueFitMarginMs": 80,
+    "closingBreaths": 2
   }
 }
