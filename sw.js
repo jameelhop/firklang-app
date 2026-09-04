@@ -17,7 +17,7 @@
 // bundtets hash. Aendrer den sig ikke, opdager browseren aldrig at der findes
 // en ny service worker - det var praecis fejlen der pinnede brugere til
 // den version de foerst hentede.
-const CACHE_VERSION = "firklang-1b4d1b125ee2";
+const CACHE_VERSION = "firklang-3f4920c7357d";
 
 const SKAL = [
   "./",
@@ -73,6 +73,35 @@ self.addEventListener("fetch", (event) => {
             .then((cached) => cached ?? caches.match("./"))
             .then((cached) => cached ?? Response.error()),
         ),
+    );
+    return;
+  }
+
+  // faellesskab.json og konfiguration.json: nettet først, altid uden om
+  // browserens HTTP-cache. Disse to filer bærer kill switch og aflysninger
+  // af arrangementer - de skal nå installerede PWA'er med det samme, ikke
+  // først når brugeren næste gang henter et nyt bundt. En 4 s timeout
+  // (AbortController) betyder at en langsom eller død forbindelse falder
+  // tilbage til den cachelagrede version i stedet for at hænge på ubestemt tid.
+  if (url.pathname.endsWith("/faellesskab.json") || url.pathname.endsWith("/konfiguration.json")) {
+    event.respondWith(
+      (async () => {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 4000);
+        try {
+          const response = await fetch(request, { cache: "no-cache", signal: controller.signal });
+          clearTimeout(timeout);
+          if (response.ok) {
+            const copy = response.clone();
+            void caches.open(CACHE_VERSION).then((c) => c.put(request, copy));
+          }
+          return response;
+        } catch {
+          clearTimeout(timeout);
+          const cached = await caches.match(request);
+          return cached ?? Response.error();
+        }
+      })(),
     );
     return;
   }

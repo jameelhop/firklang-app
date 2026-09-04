@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "opdateretISO": "2026-09-01",
+  "aktiv": true,
+  "afdelinger": [
+    {
+      "kode": "proeve-1",
+      "navn": "Prøveafdeling",
+      "aktiv": true,
+      "trivselskode": null,
+      "steder": [
+        { "id": "beboerhus", "navn": "beboerhuset" }
+      ],
+      "arrangementer": [
+        {
+          "id": "aaben-kaffe-torsdag",
+          "type": "aaben_kaffe",
+          "dato": null,
+          "hver": "tor",
+          "gyldigFra": null,
+          "gyldigTil": "2026-12-31",
+          "pauser": [],
+          "fra": "10:00",
+          "til": "12:00",
+          "stedId": "beboerhus",
+          "prisKr": 0,
+          "tilmelding": { "maade": "ingen", "senest": null, "url": null },
+          "alkoholfri": true,
+          "hvemFor": "alle",
+          "komAlene": true,
+          "letDansk": true,
+          "vaertFra": "09:50",
+          "vaertRolle": "aktivitetsudvalget",
+          "aktiv": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "opdateretISO": "2026-08-25",
+  "opdateretISO": "2026-09-04",
   "ranking": {
     "explorationFloorEveryN": 5,
     "prefWeightMin": 0.5,
@@ -26,5 +26,14 @@
     "densityOccasionalEveryN": 4,
     "cueFitMarginMs": 80,
     "closingBreaths": 2
+  },
+  "faellesskab": {
+    "fladDaemper": 0.5
+  },
+  "deling": {
+    "aktiv": 0
+  },
+  "rammer": {
+    "aktiv": 1
   }
 }
