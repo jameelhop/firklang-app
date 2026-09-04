@@ -17,7 +17,7 @@
 // bundtets hash. Aendrer den sig ikke, opdager browseren aldrig at der findes
 // en ny service worker - det var praecis fejlen der pinnede brugere til
 // den version de foerst hentede.
-const CACHE_VERSION = "firklang-31aafdce0b8c";
+const CACHE_VERSION = "firklang-e547e04c22b1";
 
 const SKAL = [
   "./",
