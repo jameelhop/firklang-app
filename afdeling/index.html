@@ -311,7 +311,14 @@
 </div>
 
 <script type="module">
-import { SKABELONER, VAERT_ROLLE_LABEL, UGEDAG_LABEL } from "./skabeloner.js";
+// Siden serveres under flere stipraefikser og baade med og uden afsluttende
+// skraastreg: /firklang-app/afdeling/ paa Pages, /firklang/afdeling paa
+// hopland.dk (Next fjerner selv skraastregen, og det kan ikke laves om uden
+// at aendre adfaerd for hele hans site). En relativ "./skabeloner.js" ville
+// derfor oploeses til /firklang/skabeloner.js og give en blank side.
+// Derfor regnes modulets sti ud fra sidens egen mappe i stedet.
+const MAPPE = location.pathname.replace(/\/[^/]*\.html?$/i, "").replace(/\/+$/, "") + "/";
+const { SKABELONER, VAERT_ROLLE_LABEL, UGEDAG_LABEL } = await import(MAPPE + "skabeloner.js");
 
 // Paa localhost peger siden paa en lokal mock, saa flowet kan proeves af
 // uden at roere produktionen.
@@ -589,6 +596,28 @@ const start = async () => {
 };
 
 if (token) start().catch(() => logUd());
+
+// Kvittering til vagtposten nedenfor.
+window.__firklangKlar = true;
+</script>
+
+<!-- Modulet ovenfor bruger top-level await, som kraever Safari 15, Chrome 89
+     eller Firefox 89. Paa en aeldre browser er hele modulet en parsefejl:
+     formularen tegnes, men ingen knap virker, og der staar intet om hvorfor.
+     Denne vagtpost er med vilje en KLASSISK script-tag i gammel syntaks, saa
+     den selv kan koere alle de steder, modulet ikke kan. -->
+<script>
+  setTimeout(function () {
+    if (window.__firklangKlar) return;
+    var login = document.getElementById("login");
+    if (!login) return;
+    var p = document.createElement("p");
+    p.className = "besked fejl";
+    p.textContent =
+      "Siden kan ikke køre i denne browser. Opdater den, eller prøv fra en " +
+      "anden telefon eller computer — så virker den igen.";
+    login.appendChild(p);
+  }, 4000);
 </script>
 </body>
 </html>
