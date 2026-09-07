@@ -17,7 +17,7 @@
 // bundtets hash. Aendrer den sig ikke, opdager browseren aldrig at der findes
 // en ny service worker - det var praecis fejlen der pinnede brugere til
 // den version de foerst hentede.
-const CACHE_VERSION = "firklang-a9ea5b86a177";
+const CACHE_VERSION = "firklang-7fe04749a491";
 
 const SKAL = [
   "./",
@@ -57,6 +57,13 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
+  // Administrationen (/admin/ og /afdeling/) ligger under samme oprindelse,
+  // men er ikke en del af appen. Den skal ALDRIG røres af denne worker:
+  // navigations-grenen nedenfor lægger hvert svar i cachen under
+  // "./index.html", så et enkelt besøg på /admin/ ville erstatte appens
+  // offline-skal med administrationssiden. Siderne kræver netværk alligevel.
+  if (url.pathname.includes("/admin/") || url.pathname.includes("/afdeling/")) return;
+
   // Navigation: nettet først, så en ny udgivelse altid opdages.
   // Falder tilbage til den cachelagrede skal, når der ikke er forbindelse.
   if (request.mode === "navigate") {
@@ -77,13 +84,17 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // faellesskab.json og konfiguration.json: nettet først, altid uden om
-  // browserens HTTP-cache. Disse to filer bærer kill switch og aflysninger
-  // af arrangementer - de skal nå installerede PWA'er med det samme, ikke
+  // faellesskab.json, konfiguration.json og katalog.json: nettet først, uden om
+  // browserens HTTP-cache. De tre filer bærer kill switch, aflysninger af
+  // arrangementer og selve indholdet - de skal nå installerede PWA'er, ikke
   // først når brugeren næste gang henter et nyt bundt. En 4 s timeout
   // (AbortController) betyder at en langsom eller død forbindelse falder
   // tilbage til den cachelagrede version i stedet for at hænge på ubestemt tid.
-  if (url.pathname.endsWith("/faellesskab.json") || url.pathname.endsWith("/konfiguration.json")) {
+  if (
+    url.pathname.endsWith("/faellesskab.json") ||
+    url.pathname.endsWith("/konfiguration.json") ||
+    url.pathname.endsWith("/katalog.json")
+  ) {
     event.respondWith(
       (async () => {
         const controller = new AbortController();

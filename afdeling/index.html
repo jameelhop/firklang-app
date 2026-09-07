@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Min boligafdeling · firklang</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#0C0908" />
+<meta name="color-scheme" content="dark" />
+<style>
+  /* firklang · afdelingssiden
+     Samme palet som appen. Accenten er oxytocin-lyserød, fordi det er det
+     felt afdelingens arrangementer faktisk fodrer. */
+  :root {
+    --grund: #0C0908;
+    --kort: #14100E;
+    --haevet: #1B1512;
+    --kant: #2A2320;
+    --tekst: #EFEAE4;
+    --daempet: #9A928B;
+    --svag: #8C8279;
+    --accent: #FF7E8F;
+    --ok: #35B8C9;
+    --advarsel: #F0B23C;
+    --display: Georgia, "Times New Roman", serif;
+    --brod: Calibri, "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--grund); color: var(--tekst);
+    font-family: var(--brod); font-size: 17px; line-height: 1.5;
+  }
+  .baand { max-width: 1180px; margin: 0 auto; padding: 24px 20px 80px; }
+
+  header.top { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 28px; }
+  header.top h1 { font-family: var(--display); font-size: 30px; margin: 0; font-weight: 700; }
+  header.top .hvem { color: var(--daempet); font-size: 15px; }
+  header.top .hvem b { color: var(--tekst); font-weight: 600; }
+  .spacer { flex: 1 1 auto; }
+
+  button, .knap {
+    font: inherit; font-size: 16px; border-radius: 10px; border: 1px solid var(--kant);
+    background: var(--haevet); color: var(--tekst); padding: 11px 18px; cursor: pointer;
+  }
+  button:hover { border-color: var(--svag); }
+  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+  button.primaer { background: var(--accent); color: #1A0A0D; border-color: var(--accent); font-weight: 700; }
+  button.primaer:hover { filter: brightness(1.08); }
+  button.stille { background: transparent; }
+  button.fare { color: #FF9BA8; }
+  button[disabled] { opacity: .5; cursor: not-allowed; }
+
+  /* ---- login ---- */
+  .login { max-width: 430px; margin: 12vh auto; }
+  .login h1 { font-family: var(--display); font-size: 34px; margin: 0 0 6px; }
+  .login p.under { color: var(--daempet); margin: 0 0 26px; }
+  .felt { margin-bottom: 16px; }
+  label { display: block; font-size: 14px; color: var(--daempet); margin-bottom: 6px; }
+  input, select, textarea {
+    width: 100%; font: inherit; padding: 11px 13px; border-radius: 10px;
+    border: 1px solid var(--kant); background: var(--kort); color: var(--tekst);
+  }
+  input::placeholder { color: #5F5852; }
+  .pin { letter-spacing: .5em; font-size: 22px; text-align: center; }
+
+  /* ---- layout ---- */
+  .to-spalter { display: grid; grid-template-columns: minmax(0,1fr) 380px; gap: 34px; align-items: start; }
+  @media (max-width: 900px) { .to-spalter { grid-template-columns: 1fr; } }
+
+  section.blok { background: var(--kort); border: 1px solid var(--kant); border-radius: 14px; padding: 20px 22px; margin-bottom: 20px; }
+  section.blok > h2 { font-family: var(--display); font-size: 20px; margin: 0 0 4px; }
+  section.blok > p.hjaelp { color: var(--daempet); font-size: 14.5px; margin: 0 0 18px; }
+
+  .raekke { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 620px) { .raekke { grid-template-columns: 1fr; } }
+
+  .tjek { display: flex; align-items: flex-start; gap: 10px; margin: 12px 0; }
+  .tjek input { width: 20px; height: 20px; margin: 2px 0 0; flex: none; }
+  .tjek label { margin: 0; color: var(--tekst); font-size: 16px; }
+  .tjek label .n { display: block; color: var(--daempet); font-size: 13.5px; }
+
+  /* ---- forhåndsvisning: signaturen ---- */
+  .visning { position: sticky; top: 24px; }
+  .visning h3 { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 0 0 12px; }
+  .telefon {
+    background: var(--grund); border: 1px solid var(--kant); border-radius: 22px;
+    padding: 18px 16px 20px; box-shadow: 0 18px 40px rgba(0,0,0,.5);
+  }
+  .telefon .felt-prik { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: inline-block; margin-right: 8px; }
+  .telefon .felt-navn { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--daempet); }
+  .telefon .korttekst {
+    font-family: var(--display); font-size: 19px; line-height: 1.42; margin: 14px 0 0;
+  }
+  .telefon .foldeud { color: var(--daempet); font-size: 14px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--kant); }
+  .telefon .knapper { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .telefon .knapper span { font-size: 12.5px; color: var(--svag); border: 1px solid var(--kant); border-radius: 999px; padding: 5px 11px; }
+  .visning .note { color: var(--svag); font-size: 13px; margin-top: 14px; }
+
+  /* ---- liste ---- */
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th { text-align: left; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); padding: 0 10px 10px 0; font-weight: 700; }
+  td { padding: 12px 10px 12px 0; border-top: 1px solid var(--kant); vertical-align: top; color: var(--daempet); }
+  td.navn { color: var(--tekst); }
+
+  .maerke { font-size: 12px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--kant); white-space: nowrap; }
+  .maerke.kladde { color: var(--daempet); }
+  .maerke.indsendt { color: var(--advarsel); border-color: #4A3A1C; }
+  .maerke.godkendt { color: var(--ok); border-color: #1C4048; }
+  .maerke.afvist { color: #FF9BA8; border-color: #4A2028; }
+
+  .besked { border-radius: 10px; padding: 12px 15px; margin: 14px 0; font-size: 15px; }
+  .besked.fejl { background: #2A1418; border: 1px solid #4A2028; color: #FFC2CB; }
+  .besked.ok { background: #10231F; border: 1px solid #1C4048; color: #9BE3DE; }
+  .skjult { display: none !important; }
+  .fejltekst { color: #FF9BA8; font-size: 13.5px; margin-top: 6px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .telefon .korttekst { transition: opacity .18s ease; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="login" class="login">
+  <h1>Min boligafdeling</h1>
+  <p class="under">Log ind med afdelingens kode og den pinkode, I har fået.</p>
+  <div class="felt">
+    <label for="kode">Afdelingens kode</label>
+    <input id="kode" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="solvang-faelleshus" />
+  </div>
+  <div class="felt">
+    <label for="pin">Pinkode</label>
+    <input id="pin" class="pin" inputmode="numeric" autocomplete="one-time-code" maxlength="10" />
+  </div>
+  <div id="loginfejl" class="besked fejl skjult"></div>
+  <button class="primaer" id="logind" style="width:100%">Log ind</button>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app" class="baand skjult">
+  <header class="top">
+    <h1>Min boligafdeling</h1>
+    <span class="hvem">Logget ind som <b id="afdnavn">…</b></span>
+    <span class="spacer"></span>
+    <button class="stille" id="logud">Log ud</button>
+  </header>
+
+  <div id="global" class="besked skjult"></div>
+
+  <div class="to-spalter">
+    <div>
+      <section class="blok">
+        <h2 id="formtitel">Ny aktivitet</h2>
+        <p class="hjaelp">I udfylder kun fakta. Teksten skriver appen selv — I kan se den, mens I taster.</p>
+
+        <div class="felt">
+          <label for="f-kode">Hvor?</label>
+          <select id="f-kode"></select>
+        </div>
+
+        <div class="felt">
+          <label for="f-type">Hvad er det for en aktivitet?</label>
+          <select id="f-type">
+            <option value="faellesspisning">Fællesspisning</option>
+            <option value="aaben_kaffe">Åben kaffe</option>
+            <option value="gaahold">Gåhold</option>
+            <option value="banko">Banko</option>
+            <option value="faelles_madlavning">Fælles madlavning</option>
+            <option value="haandarbejde">Håndarbejde</option>
+            <option value="filmaften">Filmaften</option>
+          </select>
+        </div>
+
+        <div class="felt">
+          <label>Hvornår?</label>
+          <div class="raekke">
+            <div>
+              <select id="f-gentag">
+                <option value="hver">Hver uge på samme dag</option>
+                <option value="dato">Én enkelt dag</option>
+              </select>
+            </div>
+            <div>
+              <select id="f-hver">
+                <option value="man">Mandag</option><option value="tir">Tirsdag</option>
+                <option value="ons">Onsdag</option><option value="tor" selected>Torsdag</option>
+                <option value="fre">Fredag</option><option value="loer">Lørdag</option>
+                <option value="soen">Søndag</option>
+              </select>
+              <input id="f-dato" type="date" class="skjult" />
+            </div>
+          </div>
+        </div>
+
+        <div class="raekke">
+          <div class="felt">
+            <label for="f-fra">Starter kl.</label>
+            <input id="f-fra" type="time" value="18:00" />
+          </div>
+          <div class="felt">
+            <label for="f-til">Slutter kl.</label>
+            <input id="f-til" type="time" value="20:00" />
+          </div>
+        </div>
+
+        <div class="raekke">
+          <div class="felt">
+            <label for="f-vaertfra">En vært er der fra kl.</label>
+            <input id="f-vaertfra" type="time" value="17:45" />
+          </div>
+          <div class="felt">
+            <label for="f-vaertrolle">Hvem tager imod?</label>
+            <select id="f-vaertrolle">
+              <option value="aktivitetsudvalget">Aktivitetsudvalget</option>
+              <option value="afdelingsbestyrelsen">Afdelingsbestyrelsen</option>
+              <option value="boligsocial">En boligsocial medarbejder</option>
+            </select>
+          </div>
+        </div>
+        <p class="hjaelp" style="margin:-8px 0 16px">Aldrig et navn. Kun rollen — det står i aftalen.</p>
+
+        <div class="tjek">
+          <input type="checkbox" id="f-komalene" checked />
+          <label for="f-komalene">Man kan komme alene
+            <span class="n">Sæt kryds, hvis ingen behøver melde sig sammen med en anden.</span></label>
+        </div>
+        <div class="tjek">
+          <input type="checkbox" id="f-alkoholfri" checked />
+          <label for="f-alkoholfri">Alkoholfrit
+            <span class="n">Et af de otte krav for at komme i appen.</span></label>
+        </div>
+        <div class="tjek">
+          <input type="checkbox" id="f-letdansk" checked />
+          <label for="f-letdansk">Let dansk
+            <span class="n">Man kan være med uden at tale flydende dansk.</span></label>
+        </div>
+      </section>
+
+      <section class="blok">
+        <h2>Tilmelding</h2>
+        <p class="hjaelp">Sedlen i opgangen er stadig den, der gælder. Appen henviser bare til den.</p>
+        <div class="raekke">
+          <div class="felt">
+            <label for="f-tilmelding">Skal man skrive sig på?</label>
+            <select id="f-tilmelding">
+              <option value="ingen">Nej, man møder bare op</option>
+              <option value="seddel">Ja, på sedlen i opgangen</option>
+              <option value="kontor">Ja, på afdelingskontoret</option>
+              <option value="link">Ja, via et link</option>
+            </select>
+          </div>
+          <div class="felt" id="frist-felt">
+            <label for="f-senest">Sidste frist</label>
+            <input id="f-senest" type="date" />
+          </div>
+        </div>
+        <div class="felt skjult" id="link-felt">
+          <label for="f-url">Link</label>
+          <input id="f-url" placeholder="https://…" />
+        </div>
+      </section>
+
+      <section class="blok">
+        <h2>Vis den i denne periode</h2>
+        <p class="hjaelp">Lad felterne stå tomme, hvis aktiviteten kører indtil videre.</p>
+        <div class="raekke">
+          <div class="felt"><label for="f-gyldigfra">Fra</label><input id="f-gyldigfra" type="date" /></div>
+          <div class="felt"><label for="f-gyldigtil">Til og med</label><input id="f-gyldigtil" type="date" /></div>
+        </div>
+      </section>
+
+      <section class="blok">
+        <h2>Jeres egen beskrivelse</h2>
+        <p class="hjaelp">Kun til jer selv og til Jameel. Den kommer <b>aldrig</b> ud i appen — dér skriver appen selv teksten, så et navn eller en adresse ikke kan slippe ud i en fil, hele verden kan læse.</p>
+        <textarea id="f-beskrivelse" rows="3" placeholder="Fx: Vi plejer at være 12-15. Bente har nøglen."></textarea>
+      </section>
+
+      <div id="formfejl" class="besked fejl skjult"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="primaer" id="gem">Gem og send til godkendelse</button>
+        <button class="stille" id="gemkladde">Gem som kladde</button>
+        <button class="stille skjult" id="annuller">Annullér</button>
+      </div>
+
+      <section class="blok" style="margin-top:34px">
+        <h2>Jeres aktiviteter</h2>
+        <p class="hjaelp">Jameel godkender, før noget bliver vist for beboerne.</p>
+        <table>
+          <thead><tr><th>Aktivitet</th><th>Hvornår</th><th>Status</th><th></th></tr></thead>
+          <tbody id="liste"><tr><td colspan="4">Henter …</td></tr></tbody>
+        </table>
+      </section>
+    </div>
+
+    <!-- ---- signaturen: det beboeren får at se ---- -->
+    <aside class="visning">
+      <h3>Sådan ser det ud for en beboer</h3>
+      <div class="telefon">
+        <div><span class="felt-prik"></span><span class="felt-navn">Oxytocin · dagens kort</span></div>
+        <p class="korttekst" id="vis-kort">…</p>
+        <div class="foldeud" id="vis-foldeud">…</div>
+        <div class="knapper"><span>Hvornår?</span><span>Jeg gjorde det</span><span>Vis en anden</span></div>
+      </div>
+      <p class="note" id="vis-frist"></p>
+      <p class="note">Beboeren ser aldrig jeres beskrivelse, og aldrig et navn på en vært.</p>
+    </aside>
+  </div>
+</div>
+
+<script type="module">
+import { SKABELONER, VAERT_ROLLE_LABEL, UGEDAG_LABEL } from "./skabeloner.js";
+
+// Paa localhost peger siden paa en lokal mock, saa flowet kan proeves af
+// uden at roere produktionen.
+const API = location.hostname === "localhost" || location.hostname === "127.0.0.1"
+  ? location.origin + "/api"
+  : "https://mfcwbwdewztsxdxwirov.supabase.co/functions/v1/firklang-admin";
+const NOEGLE = "firklang.afdeling.token";
+
+const $ = (id) => document.getElementById(id);
+let token = sessionStorage.getItem(NOEGLE);
+let koder = [];
+let redigerer = null;
+
+const kald = async (metode, sti, krop) => {
+  const r = await fetch(API + sti, {
+    method: metode,
+    headers: {
+      "content-type": "application/json",
+      ...(token ? { authorization: "Bearer " + token } : {}),
+    },
+    body: metode === "GET" ? undefined : JSON.stringify(krop ?? {}),
+  });
+  const data = await r.json().catch(() => ({}));
+  if (r.status === 401 && sti !== "/login") { logUd(); throw new Error("Log ind igen."); }
+  if (!r.ok) throw new Error(data.fejl || "Der gik noget galt.");
+  return data;
+};
+
+const vis = (el, tekst, slags) => {
+  el.textContent = tekst;
+  el.className = "besked " + (slags || "fejl") + (tekst ? "" : " skjult");
+};
+
+// ---------- login ----------
+$("logind").addEventListener("click", async () => {
+  const kode = $("kode").value.trim().toLowerCase();
+  const pin = $("pin").value.trim();
+  try {
+    const r = await kald("POST", "/login", { slags: "afdeling", kode, pin });
+    token = r.token;
+    sessionStorage.setItem(NOEGLE, token);
+    await start();
+  } catch (e) {
+    vis($("loginfejl"), e.message, "fejl");
+  }
+});
+$("pin").addEventListener("keydown", (e) => { if (e.key === "Enter") $("logind").click(); });
+
+const logUd = () => {
+  token = null;
+  sessionStorage.removeItem(NOEGLE);
+  $("app").classList.add("skjult");
+  $("login").classList.remove("skjult");
+};
+$("logud").addEventListener("click", async () => {
+  try { await kald("POST", "/logout"); } catch { /* ligegyldigt */ }
+  logUd();
+});
+
+// ---------- forhåndsvisning ----------
+const ctxNu = () => {
+  const kodeId = $("f-kode").value;
+  const k = koder.find((x) => x.id === kodeId);
+  const gentag = $("f-gentag").value;
+  const dagNoegle = gentag === "hver" ? $("f-hver").value : null;
+  let dag = dagNoegle ? UGEDAG_LABEL[dagNoegle] : null;
+  if (gentag === "dato" && $("f-dato").value) {
+    const d = new Date($("f-dato").value + "T12:00:00");
+    dag = ["søndag","mandag","tirsdag","onsdag","torsdag","fredag","lørdag"][d.getDay()];
+  }
+  let senest = null;
+  if ($("f-tilmelding").value !== "ingen" && $("f-senest").value) {
+    const d = new Date($("f-senest").value + "T12:00:00");
+    senest = ["søndag","mandag","tirsdag","onsdag","torsdag","fredag","lørdag"][d.getDay()];
+  }
+  return {
+    stedNavn: k ? k.sted_navn : "beboerhuset",
+    fra: $("f-fra").value || "18:00",
+    vaertFra: $("f-vaertfra").value || "17:45",
+    vaertRolleLabel: VAERT_ROLLE_LABEL[$("f-vaertrolle").value],
+    komAlene: $("f-komalene").checked,
+    letDansk: $("f-letdansk").checked,
+    alkoholfri: $("f-alkoholfri").checked,
+    senest,
+    dag,
+  };
+};
+
+const tegnVisning = () => {
+  const type = $("f-type").value;
+  const ctx = ctxNu();
+  const s = SKABELONER[type];
+  $("vis-kort").textContent = s.paaDagen(ctx);
+  $("vis-foldeud").textContent = s.foldeud(ctx);
+  $("vis-frist").textContent =
+    $("f-tilmelding").value === "ingen"
+      ? ""
+      : "Før fristen står der i stedet: " + s.foerFrist(ctx);
+};
+
+// ---------- formularens tilstand ----------
+const opdaterSynlighed = () => {
+  const gentag = $("f-gentag").value;
+  $("f-hver").classList.toggle("skjult", gentag !== "hver");
+  $("f-dato").classList.toggle("skjult", gentag !== "dato");
+  const tilm = $("f-tilmelding").value;
+  $("link-felt").classList.toggle("skjult", tilm !== "link");
+  $("frist-felt").classList.toggle("skjult", tilm === "ingen");
+  tegnVisning();
+};
+
+for (const id of ["f-kode","f-type","f-gentag","f-hver","f-dato","f-fra","f-til","f-vaertfra",
+                  "f-vaertrolle","f-komalene","f-alkoholfri","f-letdansk","f-tilmelding","f-senest"]) {
+  $(id).addEventListener("input", opdaterSynlighed);
+  $(id).addEventListener("change", opdaterSynlighed);
+}
+
+const laesForm = () => {
+  const gentag = $("f-gentag").value;
+  const tilm = $("f-tilmelding").value;
+  return {
+    kodeId: $("f-kode").value,
+    type: $("f-type").value,
+    hver: gentag === "hver" ? $("f-hver").value : null,
+    dato: gentag === "dato" ? ($("f-dato").value || null) : null,
+    fra: $("f-fra").value,
+    til: $("f-til").value,
+    vaertFra: $("f-vaertfra").value,
+    vaertRolle: $("f-vaertrolle").value,
+    komAlene: $("f-komalene").checked,
+    alkoholfri: $("f-alkoholfri").checked,
+    letDansk: $("f-letdansk").checked,
+    tilmeldingMaade: tilm,
+    tilmeldingSenest: tilm === "ingen" ? null : ($("f-senest").value || null),
+    tilmeldingUrl: tilm === "link" ? ($("f-url").value || null) : null,
+    gyldigFra: $("f-gyldigfra").value || null,
+    gyldigTil: $("f-gyldigtil").value || null,
+    beskrivelse: $("f-beskrivelse").value || null,
+    prisKr: 0,
+    hvemFor: "alle",
+  };
+};
+
+const nulstilForm = () => {
+  redigerer = null;
+  $("formtitel").textContent = "Ny aktivitet";
+  $("annuller").classList.add("skjult");
+  $("f-dato").value = ""; $("f-senest").value = ""; $("f-url").value = "";
+  $("f-gyldigfra").value = ""; $("f-gyldigtil").value = "";
+  $("f-beskrivelse").value = "";
+  $("f-tilmelding").value = "ingen";
+  vis($("formfejl"), "");
+  opdaterSynlighed();
+};
+$("annuller").addEventListener("click", nulstilForm);
+
+const gem = async (status) => {
+  vis($("formfejl"), "");
+  const krop = laesForm();
+  if (!krop.kodeId) return vis($("formfejl"), "Vælg først, hvor aktiviteten foregår.", "fejl");
+  try {
+    if (redigerer) {
+      await kald("PATCH", "/arrangementer", { ...krop, id: redigerer, status });
+    } else {
+      await kald("POST", "/arrangementer", krop);
+      if (status === "indsendt") {
+        // Nyoprettede starter som kladde; send dem videre med det samme.
+        const alle = await kald("GET", "/arrangementer");
+        const nyeste = alle.arrangementer[0];
+        if (nyeste) await kald("PATCH", "/arrangementer", { id: nyeste.id, status: "indsendt" });
+      }
+    }
+    vis($("global"), status === "indsendt"
+      ? "Sendt til godkendelse. Jameel får besked, og aktiviteten vises for beboerne, når den er godkendt."
+      : "Gemt som kladde. Den vises ikke for nogen endnu.", "ok");
+    nulstilForm();
+    await hentListe();
+  } catch (e) {
+    vis($("formfejl"), e.message, "fejl");
+  }
+};
+$("gem").addEventListener("click", () => gem("indsendt"));
+$("gemkladde").addEventListener("click", () => gem("kladde"));
+
+// ---------- listen ----------
+const naarTekst = (a) =>
+  a.hver ? "Hver " + UGEDAG_LABEL[a.hver] + " kl. " + a.fra.slice(0, 5)
+         : (a.dato || "—") + " kl. " + a.fra.slice(0, 5);
+
+const hentListe = async () => {
+  const { arrangementer } = await kald("GET", "/arrangementer");
+  const tbody = $("liste");
+  tbody.innerHTML = "";
+  if (arrangementer.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4">Ingen aktiviteter endnu. Opret den første ovenfor.</td></tr>';
+    return;
+  }
+  for (const a of arrangementer) {
+    const tr = document.createElement("tr");
+    const navn = document.createElement("td");
+    navn.className = "navn";
+    navn.textContent = (SKABELONER[a.type] ? a.type.replace(/_/g, " ") : a.type) + " · " + (a.adm_kode?.sted_navn ?? "");
+    const naar = document.createElement("td");
+    naar.textContent = naarTekst(a);
+    const status = document.createElement("td");
+    const m = document.createElement("span");
+    m.className = "maerke " + a.status;
+    m.textContent = { kladde: "Kladde", indsendt: "Afventer godkendelse", godkendt: "Vises for beboerne", afvist: "Afvist" }[a.status];
+    status.appendChild(m);
+    if (a.status === "afvist" && a.afvist_grund) {
+      const g = document.createElement("div");
+      g.className = "fejltekst";
+      g.textContent = a.afvist_grund;
+      status.appendChild(g);
+    }
+    const handling = document.createElement("td");
+    const ret = document.createElement("button");
+    ret.className = "stille"; ret.textContent = "Ret";
+    ret.addEventListener("click", () => indlaes(a));
+    const slet = document.createElement("button");
+    slet.className = "stille fare"; slet.textContent = "Slet";
+    slet.style.marginLeft = "6px";
+    slet.addEventListener("click", async () => {
+      if (!confirm("Slet aktiviteten? Den forsvinder fra appen ved næste udgivelse.")) return;
+      await kald("DELETE", "/arrangementer", { id: a.id });
+      await hentListe();
+    });
+    handling.append(ret, slet);
+    tr.append(navn, naar, status, handling);
+    tbody.appendChild(tr);
+  }
+};
+
+const indlaes = (a) => {
+  redigerer = a.id;
+  $("formtitel").textContent = "Ret aktivitet";
+  $("annuller").classList.remove("skjult");
+  $("f-kode").value = a.kode_id;
+  $("f-type").value = a.type;
+  $("f-gentag").value = a.hver ? "hver" : "dato";
+  if (a.hver) $("f-hver").value = a.hver; else $("f-dato").value = a.dato ?? "";
+  $("f-fra").value = (a.fra || "18:00").slice(0, 5);
+  $("f-til").value = (a.til || "20:00").slice(0, 5);
+  $("f-vaertfra").value = (a.vaert_fra || "17:45").slice(0, 5);
+  $("f-vaertrolle").value = a.vaert_rolle;
+  $("f-komalene").checked = a.kom_alene;
+  $("f-alkoholfri").checked = a.alkoholfri;
+  $("f-letdansk").checked = a.let_dansk;
+  $("f-tilmelding").value = a.tilmelding_maade;
+  $("f-senest").value = a.tilmelding_senest ?? "";
+  $("f-url").value = a.tilmelding_url ?? "";
+  $("f-gyldigfra").value = a.gyldig_fra ?? "";
+  $("f-gyldigtil").value = a.gyldig_til ?? "";
+  $("f-beskrivelse").value = a.beskrivelse ?? "";
+  opdaterSynlighed();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+// ---------- opstart ----------
+const start = async () => {
+  const { koder: k } = await kald("GET", "/minekoder");
+  koder = k;
+  $("f-kode").innerHTML = "";
+  for (const kode of koder) {
+    const o = document.createElement("option");
+    o.value = kode.id;
+    o.textContent = kode.vis_navn + " (" + kode.sted_navn + ")";
+    $("f-kode").appendChild(o);
+  }
+  $("afdnavn").textContent = koder[0]?.adm_afdeling?.navn ?? koder[0]?.vis_navn ?? "afdelingen";
+  $("login").classList.add("skjult");
+  $("app").classList.remove("skjult");
+  opdaterSynlighed();
+  await hentListe();
+};
+
+if (token) start().catch(() => logUd());
+</script>
+</body>
+</html>

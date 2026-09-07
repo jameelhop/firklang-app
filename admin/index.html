@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>firklang · administration</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#0C0908" />
+<meta name="color-scheme" content="dark" />
+<style>
+  /* firklang · administrationen
+     Kontrolrum: tæt, hurtig, alt på ét sted. Accenten er redaktørens amber —
+     samme farve som eyebrow'en i materialet. */
+  :root {
+    --grund: #0C0908; --kort: #14100E; --haevet: #1B1512; --kant: #2A2320;
+    --tekst: #EFEAE4; --daempet: #9A928B; --svag: #8C8279;
+    --accent: #F0B23C; --ok: #35B8C9; --fare: #FF7E8F;
+    --display: Georgia, "Times New Roman", serif;
+    --brod: Calibri, "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--grund); color: var(--tekst); font-family: var(--brod); font-size: 16px; line-height: 1.5; }
+  .baand { max-width: 1240px; margin: 0 auto; padding: 22px 20px 90px; }
+
+  header.top { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
+  header.top h1 { font-family: var(--display); font-size: 27px; margin: 0; }
+  .spacer { flex: 1 1 auto; }
+
+  nav.faner { display: flex; gap: 4px; border-bottom: 1px solid var(--kant); margin: 18px 0 24px; flex-wrap: wrap; }
+  nav.faner button {
+    background: none; border: none; border-bottom: 2px solid transparent; color: var(--daempet);
+    font: inherit; padding: 10px 14px; cursor: pointer; border-radius: 0;
+  }
+  nav.faner button[aria-selected="true"] { color: var(--tekst); border-bottom-color: var(--accent); }
+
+  button, .knap { font: inherit; font-size: 15px; border-radius: 9px; border: 1px solid var(--kant); background: var(--haevet); color: var(--tekst); padding: 9px 14px; cursor: pointer; }
+  button:hover { border-color: var(--svag); }
+  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button.primaer { background: var(--accent); color: #241703; border-color: var(--accent); font-weight: 700; }
+  button.stille { background: transparent; }
+  button.fare { color: var(--fare); }
+  button[disabled] { opacity: .5; cursor: not-allowed; }
+  button.lille { font-size: 13.5px; padding: 6px 10px; }
+
+  .login { max-width: 380px; margin: 15vh auto; }
+  .login h1 { font-family: var(--display); font-size: 32px; margin: 0 0 4px; }
+  .login p { color: var(--daempet); margin: 0 0 24px; }
+  .pin { letter-spacing: .55em; font-size: 24px; text-align: center; }
+
+  label { display: block; font-size: 13.5px; color: var(--daempet); margin-bottom: 5px; }
+  input, select, textarea { width: 100%; font: inherit; padding: 10px 12px; border-radius: 9px; border: 1px solid var(--kant); background: var(--kort); color: var(--tekst); }
+  .felt { margin-bottom: 14px; }
+  .raekke { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 700px) { .raekke { grid-template-columns: 1fr; } }
+
+  section.blok { background: var(--kort); border: 1px solid var(--kant); border-radius: 13px; padding: 18px 20px; margin-bottom: 18px; }
+  section.blok > h2 { font-family: var(--display); font-size: 19px; margin: 0 0 3px; }
+  section.blok > p.hjaelp { color: var(--daempet); font-size: 14px; margin: 0 0 16px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  th { text-align: left; font-size: 11.5px; letter-spacing: .09em; text-transform: uppercase; color: var(--accent); padding: 0 10px 9px 0; }
+  td { padding: 11px 10px 11px 0; border-top: 1px solid var(--kant); vertical-align: top; color: var(--daempet); }
+  td.navn { color: var(--tekst); }
+  code { font-family: Consolas, "Courier New", monospace; background: var(--haevet); padding: 2px 7px; border-radius: 6px; color: var(--tekst); font-size: 13.5px; }
+
+  .maerke { font-size: 11.5px; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--kant); white-space: nowrap; }
+  .maerke.indsendt { color: var(--accent); border-color: #4A3A1C; }
+  .maerke.godkendt { color: var(--ok); border-color: #1C4048; }
+  .maerke.kladde { color: var(--daempet); }
+  .maerke.afvist { color: var(--fare); border-color: #4A2028; }
+
+  .besked { border-radius: 9px; padding: 11px 14px; margin: 12px 0; font-size: 14.5px; white-space: pre-line; }
+  .besked.fejl { background: #2A1418; border: 1px solid #4A2028; color: #FFC2CB; }
+  .besked.ok { background: #10231F; border: 1px solid #1C4048; color: #9BE3DE; }
+  .besked.advarsel { background: #2A2114; border: 1px solid #4A3A1C; color: var(--accent); }
+  .skjult { display: none !important; }
+
+  .pinvis { font-family: Consolas, monospace; font-size: 34px; letter-spacing: .3em; color: var(--accent); text-align: center; padding: 16px; background: var(--haevet); border-radius: 11px; margin: 12px 0; }
+  pre.json { background: var(--haevet); border: 1px solid var(--kant); border-radius: 10px; padding: 14px; overflow: auto; max-height: 340px; font-size: 12.5px; color: var(--daempet); }
+  .tal { font-family: var(--display); font-size: 30px; color: var(--accent); }
+  .noegletal { display: flex; gap: 30px; flex-wrap: wrap; margin-bottom: 6px; }
+  .noegletal div span { display: block; font-size: 13px; color: var(--daempet); }
+</style>
+</head>
+<body>
+
+<div id="login" class="login">
+  <h1>firklang</h1>
+  <p>Administration</p>
+  <div class="felt">
+    <label for="pin">Pinkode</label>
+    <input id="pin" class="pin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="10" />
+  </div>
+  <div id="loginfejl" class="besked fejl skjult"></div>
+  <button class="primaer" id="logind" style="width:100%">Log ind</button>
+</div>
+
+<div id="app" class="baand skjult">
+  <header class="top">
+    <h1>firklang · administration</h1>
+    <span class="spacer"></span>
+    <button class="stille" id="logud">Log ud</button>
+  </header>
+
+  <nav class="faner" role="tablist">
+    <button role="tab" aria-selected="true" data-fane="afdelinger">Afdelinger og koder</button>
+    <button role="tab" aria-selected="false" data-fane="godkend">Til godkendelse <span id="antal-vent"></span></button>
+    <button role="tab" aria-selected="false" data-fane="katalog">Forslagene</button>
+    <button role="tab" aria-selected="false" data-fane="udgiv">Udgivelse</button>
+  </nav>
+
+  <div id="global" class="besked skjult"></div>
+
+  <!-- ============ AFDELINGER ============ -->
+  <div id="fane-afdelinger">
+    <section class="blok">
+      <h2>Ny afdeling</h2>
+      <p class="hjaelp">Opretter afdelingen, dens første kode og en pinkode til kontaktpersonen. Pinkoden vises én gang.</p>
+      <div class="raekke">
+        <div class="felt"><label for="n-navn">Afdelingens navn (kun til dig)</label><input id="n-navn" placeholder="Solvang afd. 7" /></div>
+        <div class="felt"><label for="n-kode">Koden beboerne taster</label><input id="n-kode" placeholder="solvang-faelleshus" autocapitalize="none" spellcheck="false" /></div>
+      </div>
+      <div class="raekke">
+        <div class="felt"><label for="n-visnavn">Navnet appen viser</label><input id="n-visnavn" placeholder="Solvang Fælleshus" /></div>
+        <div class="felt"><label for="n-stednavn">Stedets navn</label><input id="n-stednavn" placeholder="beboerhuset" /></div>
+      </div>
+      <p class="hjaelp">De to sidste felter havner i en fil, hele verden kan læse. Derfor må de ikke indeholde tal, @, ! eller nr./tv./th./st. — det er værnet mod adresser.</p>
+      <div id="nyfejl" class="besked fejl skjult"></div>
+      <button class="primaer" id="opret">Opret afdeling</button>
+      <div id="nypin" class="skjult">
+        <div class="besked advarsel">Skriv pinkoden ned nu. Den gemmes kun som en hash og kan ikke vises igen — kun nulstilles.</div>
+        <div class="pinvis" id="pinvaerdi"></div>
+      </div>
+    </section>
+
+    <section class="blok">
+      <h2>Afdelinger</h2>
+      <p class="hjaelp">En afdeling kan have flere koder — fælleshuset, træningsrummet, vaskeriet. Hver kode bliver sin egen post i appen.</p>
+      <div id="afdliste">Henter …</div>
+    </section>
+  </div>
+
+  <!-- ============ GODKENDELSE ============ -->
+  <div id="fane-godkend" class="skjult">
+    <section class="blok">
+      <h2>Afventer godkendelse</h2>
+      <p class="hjaelp">Ingenting når ud til en beboer, før du har godkendt det. Det er løftet i materialet: redaktøren godkender alt partnerindhold.</p>
+      <div id="godkendliste">Henter …</div>
+    </section>
+    <section class="blok">
+      <h2>Alt indhold fra afdelingerne</h2>
+      <div id="alleliste">Henter …</div>
+    </section>
+  </div>
+
+  <!-- ============ KATALOGET ============ -->
+  <div id="fane-katalog" class="skjult">
+    <section class="blok">
+      <h2>Forslagene i appen</h2>
+      <p class="hjaelp">Det, beboeren får foreslået. Vejrtrækningsøvelserne og de kommende trænings- og udstrækningsøvelser hører til her, men er ikke bygget endnu — se noten nederst.</p>
+      <div class="raekke">
+        <div class="felt">
+          <label for="k-felt">Felt</label>
+          <select id="k-felt">
+            <option value="">Alle fire</option>
+            <option value="dopamin">Dopamin</option>
+            <option value="serotonin">Serotonin</option>
+            <option value="oxytocin">Oxytocin</option>
+            <option value="endorfin">Endorfin</option>
+          </select>
+        </div>
+        <div class="felt">
+          <label for="k-soeg">Søg i teksten</label>
+          <input id="k-soeg" placeholder="fx kaffe" autocomplete="off" />
+        </div>
+      </div>
+      <div id="katalogfejl" class="besked skjult"></div>
+      <div id="katalogliste">Henter …</div>
+    </section>
+
+    <section class="blok skjult" id="k-redigering">
+      <h2 id="k-titel">Ret forslag</h2>
+      <p class="hjaelp" id="k-slug"></p>
+
+      <div class="felt">
+        <label for="k-body">Teksten beboeren læser</label>
+        <textarea id="k-body" rows="3" maxlength="400"></textarea>
+        <p class="hjaelp" style="margin:6px 0 0" id="k-tegn">Højst 400 tegn. Længere tekst får appen til at kassere forslaget.</p>
+      </div>
+
+      <div class="raekke">
+        <div class="felt"><label for="k-varighed">Minutter</label><input id="k-varighed" type="number" min="0" max="240" /></div>
+        <div class="felt"><label for="k-intensitet">Intensitet (1-5)</label><input id="k-intensitet" type="number" min="1" max="5" /></div>
+      </div>
+
+      <div class="felt">
+        <label for="k-eksponering">Hvad udsætter det kroppen for?</label>
+        <select id="k-eksponering">
+          <option value="ingen">Ingenting særligt</option>
+          <option value="kulde">Kulde</option>
+          <option value="varme">Varme</option>
+          <option value="kulde_og_varme">Både kulde og varme (fx sauna og koldt vand skiftevis)</option>
+          <option value="madfaste">Faste fra mad</option>
+        </select>
+        <div class="besked advarsel" id="k-folger" style="margin-top:10px"></div>
+      </div>
+
+      <div class="raekke">
+        <div class="felt">
+          <label for="k-social">Hvem skal der til?</label>
+          <select id="k-social">
+            <option value="alone">Kan gøres alene</option>
+            <option value="known">Kræver en, man kender</option>
+            <option value="anyone">Kan gøres blandt fremmede</option>
+          </select>
+        </div>
+        <div class="felt">
+          <label for="k-cost">Koster det penge?</label>
+          <select id="k-cost"><option value="free">Nej, gratis</option><option value="paid">Ja</option></select>
+        </div>
+      </div>
+
+      <div class="raekke">
+        <div class="felt">
+          <label for="k-kunfor">Hvem er det for?</label>
+          <select id="k-kunfor"><option value="alle">Alle</option><option value="kvinder">Kun kvinder</option><option value="maend">Kun mænd</option></select>
+        </div>
+        <div class="felt">
+          <label for="k-state">Status</label>
+          <select id="k-state"><option value="draft">Kladde</option><option value="approved">Vises for beboerne</option></select>
+        </div>
+      </div>
+
+      <div class="raekke">
+        <div class="felt"><label><input type="checkbox" id="k-touch" style="width:auto;margin-right:8px" />Der er berøring fra en anden</label></div>
+        <div class="felt"><label><input type="checkbox" id="k-alcohol" style="width:auto;margin-right:8px" />Der bliver drukket</label></div>
+      </div>
+      <div class="raekke">
+        <div class="felt"><label><input type="checkbox" id="k-aften" style="width:auto;margin-right:8px" />Kan foreslås om aftenen</label></div>
+        <div class="felt"><label><input type="checkbox" id="k-mindre" style="width:auto;margin-right:8px" />Er et mindre alternativ</label></div>
+      </div>
+      <div class="raekke">
+        <div class="felt"><label><input type="checkbox" id="k-ude" style="width:auto;margin-right:8px" />Foregår udendørs</label></div>
+        <div class="felt"><label><input type="checkbox" id="k-dagslys" style="width:auto;margin-right:8px" />Kræver dagslys</label></div>
+      </div>
+
+      <div id="k-gemfejl" class="besked skjult"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="primaer" id="k-gem">Gem</button>
+        <button class="stille" id="k-annuller">Luk</button>
+      </div>
+    </section>
+
+    <section class="blok">
+      <h2>Udgiv kataloget</h2>
+      <p class="hjaelp">Bygger <code>katalog.json</code>. Appen tager en ny udgave i brug ved næste start — ikke midt i en session, hvor den ville flytte dagens kort for øjnene af beboeren.</p>
+      <div class="noegletal">
+        <div><span class="tal" id="k-antal">–</span><span>forslag i filen</span></div>
+      </div>
+      <div id="k-udgivfejl" class="besked skjult"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+        <button class="primaer" id="k-udgiv">Udgiv kataloget</button>
+        <button class="stille" id="k-vis">Vis filen først</button>
+      </div>
+      <pre class="json skjult" id="k-json"></pre>
+
+      <h2 style="margin-top:26px">Nødstop for kataloget</h2>
+      <p class="hjaelp">Slår det hentede katalog fra. Appen falder tilbage til det indbyggede — også på telefoner, der allerede har hentet en fil. Det virker først, når du har udgivet bagefter.</p>
+      <button class="fare" id="k-kill">Slå det hentede katalog fra</button>
+      <button class="stille skjult" id="k-killtil">Slå til igen</button>
+
+      <p class="hjaelp" style="margin-top:16px">Vejrtrækning, træning og udstrækning kan ikke redigeres her endnu. Vejrtrækningsøvelserne er håndskrevne i appen og hænger sammen med lydfiler og timing; træning og udstrækning findes kun som tomt skema i databasen. Begge dele kræver deres egen runde.</p>
+    </section>
+  </div>
+
+  <!-- ============ UDGIVELSE ============ -->
+  <div id="fane-udgiv" class="skjult">
+    <section class="blok">
+      <h2>Udgiv til appen</h2>
+      <p class="hjaelp">Bygger <code>faellesskab.json</code> og lægger den i <code>jameelhop/firklang-app</code>. Appen henter filen netværk-først, så en aflysning slår igennem med det samme.</p>
+      <div class="noegletal">
+        <div><span class="tal" id="t-koder">–</span><span>koder</span></div>
+        <div><span class="tal" id="t-arr">–</span><span>godkendte arrangementer</span></div>
+      </div>
+      <div id="udgivfejl" class="besked skjult"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+        <button class="primaer" id="udgiv">Udgiv nu</button>
+        <button class="stille" id="forhaandsvis">Vis filen først</button>
+        <button class="stille" id="hentfil">Hent filen</button>
+      </div>
+      <pre class="json skjult" id="jsonvis"></pre>
+    </section>
+
+    <section class="blok">
+      <h2>Nødstop</h2>
+      <p class="hjaelp">Slår alle afdelinger fra i næste udgivelse uden at slette noget. Appen holder op med at vise arrangementer, så snart filen er hentet.</p>
+      <label class="skjult" for="kill">Nødstop</label>
+      <button class="fare" id="kill">Slå alle afdelinger fra</button>
+      <button class="stille skjult" id="killtil">Slå til igen</button>
+    </section>
+
+    <section class="blok">
+      <h2>Seneste udgivelser</h2>
+      <div id="udgivliste">Henter …</div>
+    </section>
+  </div>
+</div>
+
+<script type="module">
+// Paa localhost peger siden paa en lokal mock, saa flowet kan proeves af
+// uden at roere produktionen.
+const API = location.hostname === "localhost" || location.hostname === "127.0.0.1"
+  ? location.origin + "/api"
+  : "https://mfcwbwdewztsxdxwirov.supabase.co/functions/v1/firklang-admin";
+const NOEGLE = "firklang.admin.token";
+const $ = (id) => document.getElementById(id);
+let token = sessionStorage.getItem(NOEGLE);
+
+const TYPE_LABEL = {
+  faellesspisning: "Fællesspisning", aaben_kaffe: "Åben kaffe", gaahold: "Gåhold",
+  banko: "Banko", faelles_madlavning: "Fælles madlavning", haandarbejde: "Håndarbejde",
+  filmaften: "Filmaften",
+};
+const UGEDAG = { man:"mandag", tir:"tirsdag", ons:"onsdag", tor:"torsdag", fre:"fredag", loer:"lørdag", soen:"søndag" };
+
+const kald = async (metode, sti, krop) => {
+  const r = await fetch(API + sti, {
+    method: metode,
+    headers: { "content-type": "application/json", ...(token ? { authorization: "Bearer " + token } : {}) },
+    body: metode === "GET" ? undefined : JSON.stringify(krop ?? {}),
+  });
+  const data = await r.json().catch(() => ({}));
+  if (r.status === 401 && sti !== "/login") { logUd(); throw new Error("Log ind igen."); }
+  if (!r.ok) {
+    // Udgivelsen kan afvise med en liste over hvad der er galt og hvor.
+    // Den liste er hele pointen — uden den ved man ikke hvilken kode det er.
+    const detaljer = Array.isArray(data.problemer) && data.problemer.length
+      ? "\n\n" + data.problemer.join("\n")
+      : "";
+    throw new Error((data.fejl || "Der gik noget galt.") + detaljer);
+  }
+  return data;
+};
+const vis = (el, tekst, slags) => {
+  el.textContent = tekst;
+  el.className = "besked " + (slags || "fejl") + (tekst ? "" : " skjult");
+};
+
+// ---------- login ----------
+$("logind").addEventListener("click", async () => {
+  try {
+    const r = await kald("POST", "/login", { slags: "admin", pin: $("pin").value.trim() });
+    token = r.token; sessionStorage.setItem(NOEGLE, token);
+    await start();
+  } catch (e) { vis($("loginfejl"), e.message, "fejl"); }
+});
+$("pin").addEventListener("keydown", (e) => { if (e.key === "Enter") $("logind").click(); });
+
+const logUd = () => {
+  token = null; sessionStorage.removeItem(NOEGLE);
+  $("app").classList.add("skjult"); $("login").classList.remove("skjult");
+};
+$("logud").addEventListener("click", async () => {
+  try { await kald("POST", "/logout"); } catch {}
+  logUd();
+});
+
+// ---------- faner ----------
+for (const b of document.querySelectorAll("nav.faner button")) {
+  b.addEventListener("click", () => {
+    for (const a of document.querySelectorAll("nav.faner button")) a.setAttribute("aria-selected", String(a === b));
+    for (const f of ["afdelinger", "godkend", "katalog", "udgiv"]) {
+      $("fane-" + f).classList.toggle("skjult", f !== b.dataset.fane);
+    }
+    if (b.dataset.fane === "udgiv") hentUdgivelser();
+    if (b.dataset.fane === "katalog") { hentKatalog(); opdaterKatalogTal(); }
+  });
+}
+
+// ---------- afdelinger ----------
+$("opret").addEventListener("click", async () => {
+  vis($("nyfejl"), "");
+  try {
+    const r = await kald("POST", "/afdelinger", {
+      navn: $("n-navn").value.trim(),
+      kode: $("n-kode").value.trim().toLowerCase(),
+      visNavn: $("n-visnavn").value.trim(),
+      stedNavn: $("n-stednavn").value.trim(),
+    });
+    $("pinvaerdi").textContent = r.pin;
+    $("nypin").classList.remove("skjult");
+    for (const id of ["n-navn","n-kode","n-visnavn","n-stednavn"]) $(id).value = "";
+    await hentAfdelinger();
+  } catch (e) { vis($("nyfejl"), e.message, "fejl"); }
+});
+
+const hentAfdelinger = async () => {
+  const { afdelinger } = await kald("GET", "/afdelinger");
+  const rod = $("afdliste");
+  rod.innerHTML = "";
+  if (!afdelinger.length) { rod.textContent = "Ingen afdelinger endnu."; return; }
+
+  for (const a of afdelinger) {
+    const blok = document.createElement("div");
+    blok.style.cssText = "border-top:1px solid var(--kant);padding:16px 0";
+
+    const h = document.createElement("div");
+    h.style.cssText = "display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px";
+    const navn = document.createElement("b");
+    navn.textContent = a.navn;
+    navn.style.fontSize = "17px";
+    const status = document.createElement("span");
+    status.className = "maerke " + (a.aktiv ? "godkendt" : "afvist");
+    status.textContent = a.aktiv ? "Aktiv" : "Slået fra";
+    const luft = document.createElement("span"); luft.style.flex = "1";
+
+    const nyPin = document.createElement("button");
+    nyPin.className = "stille lille"; nyPin.textContent = "Ny pinkode";
+    nyPin.addEventListener("click", async () => {
+      if (!confirm("Ny pinkode til " + a.navn + "? Den gamle holder op med at virke med det samme.")) return;
+      const r = await kald("POST", "/pin", { afdelingId: a.id });
+      alert("Ny pinkode til " + a.navn + ":\n\n" + r.pin + "\n\nSkriv den ned nu — den kan ikke vises igen.");
+    });
+
+    const slaa = document.createElement("button");
+    slaa.className = "stille lille"; slaa.textContent = a.aktiv ? "Slå fra" : "Slå til";
+    slaa.addEventListener("click", async () => {
+      await kald("PATCH", "/afdelinger", { id: a.id, aktiv: !a.aktiv });
+      await hentAfdelinger();
+    });
+
+    const slet = document.createElement("button");
+    slet.className = "stille lille fare"; slet.textContent = "Slet";
+    slet.addEventListener("click", async () => {
+      if (!confirm("Slet " + a.navn + " med alle koder og arrangementer? Kan ikke fortrydes.")) return;
+      await kald("DELETE", "/afdelinger", { id: a.id });
+      await hentAfdelinger();
+    });
+
+    h.append(navn, status, luft, nyPin, slaa, slet);
+    blok.appendChild(h);
+
+    const t = document.createElement("table");
+    t.innerHTML = "<thead><tr><th>Kode</th><th>Vises som</th><th>Sted</th><th></th></tr></thead>";
+    const tb = document.createElement("tbody");
+    for (const k of a.adm_kode ?? []) {
+      const tr = document.createElement("tr");
+      const c1 = document.createElement("td");
+      const kode = document.createElement("code"); kode.textContent = k.kode;
+      c1.appendChild(kode);
+      const c2 = document.createElement("td"); c2.className = "navn"; c2.textContent = k.vis_navn;
+      const c3 = document.createElement("td"); c3.textContent = k.sted_navn;
+      const c4 = document.createElement("td");
+      const fjern = document.createElement("button");
+      fjern.className = "stille lille fare"; fjern.textContent = "Slet kode";
+      fjern.addEventListener("click", async () => {
+        if (!confirm("Slet koden " + k.kode + "?")) return;
+        await kald("DELETE", "/koder", { id: k.id });
+        await hentAfdelinger();
+      });
+      c4.appendChild(fjern);
+      tr.append(c1, c2, c3, c4);
+      tb.appendChild(tr);
+    }
+    t.appendChild(tb);
+    blok.appendChild(t);
+
+    const tilfoej = document.createElement("button");
+    tilfoej.className = "stille lille";
+    tilfoej.style.marginTop = "10px";
+    tilfoej.textContent = "+ Tilføj kode (fx træningsrummet)";
+    tilfoej.addEventListener("click", async () => {
+      const kode = prompt("Koden beboerne taster (små bogstaver, tal og bindestreg):");
+      if (!kode) return;
+      const visNavn = prompt("Navnet appen viser (ingen tal):");
+      if (!visNavn) return;
+      const stedNavn = prompt("Stedets navn (fx træningsrummet):");
+      if (!stedNavn) return;
+      try {
+        await kald("POST", "/koder", {
+          afdelingId: a.id, kode: kode.trim().toLowerCase(),
+          visNavn: visNavn.trim(), stedNavn: stedNavn.trim(),
+          stedId: stedNavn.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 24),
+        });
+        await hentAfdelinger();
+      } catch (e) { alert(e.message); }
+    });
+    blok.appendChild(tilfoej);
+    rod.appendChild(blok);
+  }
+};
+
+// ---------- godkendelse ----------
+const naarTekst = (a) =>
+  a.hver ? "Hver " + UGEDAG[a.hver] + " kl. " + a.fra.slice(0,5)
+         : (a.dato || "—") + " kl. " + a.fra.slice(0,5);
+
+const tegnArrangementer = (rod, liste, medHandling) => {
+  rod.innerHTML = "";
+  if (!liste.length) { rod.textContent = "Ingenting her."; return; }
+  const t = document.createElement("table");
+  t.innerHTML = "<thead><tr><th>Aktivitet</th><th>Sted</th><th>Hvornår</th><th>Status</th><th></th></tr></thead>";
+  const tb = document.createElement("tbody");
+  for (const a of liste) {
+    const tr = document.createElement("tr");
+    const c1 = document.createElement("td"); c1.className = "navn"; c1.textContent = TYPE_LABEL[a.type] ?? a.type;
+    if (a.beskrivelse) {
+      const n = document.createElement("div");
+      n.style.cssText = "color:var(--svag);font-size:13px;margin-top:4px";
+      n.textContent = "Intern note: " + a.beskrivelse;
+      c1.appendChild(n);
+    }
+    const c2 = document.createElement("td"); c2.textContent = a.adm_kode?.vis_navn ?? "";
+    const c3 = document.createElement("td"); c3.textContent = naarTekst(a);
+    const c4 = document.createElement("td");
+    const m = document.createElement("span"); m.className = "maerke " + a.status;
+    m.textContent = { kladde:"Kladde", indsendt:"Afventer", godkendt:"Live", afvist:"Afvist" }[a.status];
+    c4.appendChild(m);
+    const c5 = document.createElement("td");
+    if (medHandling) {
+      const ja = document.createElement("button");
+      ja.className = "lille primaer"; ja.textContent = "Godkend";
+      ja.addEventListener("click", async () => {
+        await kald("PATCH", "/arrangementer", { id: a.id, status: "godkendt" });
+        await hentGodkend();
+      });
+      const nej = document.createElement("button");
+      nej.className = "lille stille fare"; nej.textContent = "Afvis";
+      nej.style.marginLeft = "6px";
+      nej.addEventListener("click", async () => {
+        const grund = prompt("Hvad skal afdelingen rette?");
+        if (grund === null) return;
+        await kald("PATCH", "/arrangementer", { id: a.id, status: "afvist", afvistGrund: grund });
+        await hentGodkend();
+      });
+      c5.append(ja, nej);
+    } else if (a.status === "godkendt") {
+      const traek = document.createElement("button");
+      traek.className = "lille stille"; traek.textContent = "Træk tilbage";
+      traek.addEventListener("click", async () => {
+        await kald("PATCH", "/arrangementer", { id: a.id, status: "kladde" });
+        await hentGodkend();
+      });
+      c5.appendChild(traek);
+    }
+    tr.append(c1, c2, c3, c4, c5);
+    tb.appendChild(tr);
+  }
+  t.appendChild(tb);
+  rod.appendChild(t);
+};
+
+const hentGodkend = async () => {
+  const { arrangementer } = await kald("GET", "/arrangementer");
+  const venter = arrangementer.filter((a) => a.status === "indsendt");
+  tegnArrangementer($("godkendliste"), venter, true);
+  tegnArrangementer($("alleliste"), arrangementer, false);
+  $("antal-vent").textContent = venter.length ? "(" + venter.length + ")" : "";
+  return arrangementer;
+};
+
+// ---------- udgivelse ----------
+const opdaterTal = async () => {
+  const { fil } = await kald("GET", "/forhaandsvis");
+  $("t-koder").textContent = (fil.afdelinger ?? []).length;
+  $("t-arr").textContent = (fil.afdelinger ?? []).reduce((n, a) => n + (a.arrangementer?.length ?? 0), 0);
+  $("kill").classList.toggle("skjult", fil.aktiv === false);
+  $("killtil").classList.toggle("skjult", fil.aktiv !== false);
+  return fil;
+};
+
+$("forhaandsvis").addEventListener("click", async () => {
+  const fil = await opdaterTal();
+  $("jsonvis").textContent = JSON.stringify(fil, null, 2);
+  $("jsonvis").classList.remove("skjult");
+});
+
+$("hentfil").addEventListener("click", async () => {
+  const { fil } = await kald("GET", "/forhaandsvis");
+  const b = new Blob([JSON.stringify(fil, null, 2) + "\n"], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(b); a.download = "faellesskab.json"; a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+$("udgiv").addEventListener("click", async () => {
+  vis($("udgivfejl"), "");
+  $("udgiv").disabled = true;
+  try {
+    const r = await kald("POST", "/udgiv");
+    if (r.manuel) {
+      vis($("udgivfejl"), "Der er ikke sat en GitHub-nøgle op, så filen kunne ikke lægges op automatisk. Hent den nedenfor og læg den i repoet.", "advarsel");
+      $("jsonvis").textContent = JSON.stringify(r.fil, null, 2);
+      $("jsonvis").classList.remove("skjult");
+    } else {
+      vis($("udgivfejl"), "Udgivet: " + r.antalKoder + " koder og " + r.antalArr + " arrangementer.", "ok");
+    }
+    await hentUdgivelser();
+  } catch (e) {
+    vis($("udgivfejl"), e.message, "fejl");
+  } finally {
+    $("udgiv").disabled = false;
+  }
+});
+
+const saetKill = async (aktiv) => {
+  await kald("POST", "/killswitch", { aktiv });
+  await opdaterTal();
+  vis($("udgivfejl"), aktiv
+    ? "Slået til igen. Husk at udgive."
+    : "Nødstop sat. Udgiv nu, for at det slår igennem i appen.", "advarsel");
+};
+$("kill").addEventListener("click", () => {
+  if (confirm("Slå alle afdelinger fra? Ingen beboere ser arrangementer, når filen er udgivet.")) saetKill(false);
+});
+$("killtil").addEventListener("click", () => saetKill(true));
+
+const hentUdgivelser = async () => {
+  await opdaterTal();
+  const { udgivelser } = await kald("GET", "/udgivelser");
+  const rod = $("udgivliste");
+  rod.innerHTML = "";
+  if (!udgivelser.length) { rod.textContent = "Ingen udgivelser endnu."; return; }
+  const t = document.createElement("table");
+  t.innerHTML = "<thead><tr><th>Tidspunkt</th><th>Koder</th><th>Arrangementer</th><th>Resultat</th></tr></thead>";
+  const tb = document.createElement("tbody");
+  for (const u of udgivelser) {
+    const tr = document.createElement("tr");
+    const c1 = document.createElement("td"); c1.className = "navn";
+    c1.textContent = new Date(u.tidspunkt).toLocaleString("da-DK");
+    const c2 = document.createElement("td"); c2.textContent = u.antal_koder;
+    const c3 = document.createElement("td"); c3.textContent = u.antal_arr;
+    const c4 = document.createElement("td");
+    c4.textContent = u.resultat === "ok" ? "Udgivet" : (u.fejltekst || "Fejlede");
+    c4.style.color = u.resultat === "ok" ? "var(--ok)" : "var(--fare)";
+    tr.append(c1, c2, c3, c4);
+    tb.appendChild(tr);
+  }
+  t.appendChild(tb);
+  rod.appendChild(t);
+};
+
+// ---------- kataloget ----------
+
+// Hvad et valg af eksponering FAKTISK gør. Redaktøren skal se konsekvensen,
+// ikke bare vælge en etiket — det er hele forskellen på et informeret valg og
+// et gæt. Teksterne spejler safety.ts.
+const EKSPONERING_FOLGER = {
+  ingen: "Ingen hensyn skjuler forslaget. Vælg det kun, hvis kroppen ikke udsættes for noget særligt.",
+  kulde: "Skjules for: hjerte-kar, forhøjet blodtryk, graviditet og Raynauds.",
+  varme: "Skjules for: hjerte-kar, forhøjet blodtryk og graviditet. Ikke Raynauds — varme lindrer det.",
+  kulde_og_varme: "Skjules for: hjerte-kar, forhøjet blodtryk, graviditet og Raynauds. Og mindst 48 timer mellem hver gang.",
+  madfaste: "Skjules for: spiseforstyrrelse og undervægt. Foreslås aldrig uden brugerens eget ja, og højst én gang om ugen.",
+};
+
+const FELT_NAVN = { dopamin: "Dopamin", serotonin: "Serotonin", oxytocin: "Oxytocin", endorfin: "Endorfin" };
+
+let katalog = [];
+let retter = null;
+
+const bodyFor = (p) => {
+  const t = Array.isArray(p.content_text) ? p.content_text.find((x) => x.locale === "da") : null;
+  return t ? t.body : "";
+};
+
+const hentKatalog = async () => {
+  const { poster } = await kald("GET", "/katalog");
+  katalog = poster;
+  tegnKatalog();
+};
+
+const tegnKatalog = () => {
+  const felt = $("k-felt").value;
+  const soeg = $("k-soeg").value.trim().toLowerCase();
+  const rod = $("katalogliste");
+  rod.innerHTML = "";
+
+  const vist = katalog.filter(
+    (p) =>
+      (!felt || p.primary_field === felt) &&
+      (!soeg || bodyFor(p).toLowerCase().includes(soeg) || (p.slug || "").includes(soeg)),
+  );
+  if (!vist.length) {
+    rod.textContent = "Ingen forslag matcher.";
+    return;
+  }
+
+  const t = document.createElement("table");
+  t.innerHTML =
+    "<thead><tr><th>Forslag</th><th>Felt</th><th>Min.</th><th>Udsætter for</th><th>Status</th><th></th></tr></thead>";
+  const tb = document.createElement("tbody");
+  for (const p of vist) {
+    const tr = document.createElement("tr");
+
+    const c1 = document.createElement("td");
+    c1.className = "navn";
+    c1.textContent = bodyFor(p).slice(0, 90);
+    if (p.slug) {
+      const s = document.createElement("div");
+      s.style.cssText = "color:var(--svag);font-size:12px;margin-top:3px";
+      s.textContent = p.slug;
+      c1.appendChild(s);
+    } else {
+      const s = document.createElement("div");
+      s.style.cssText = "color:var(--fare);font-size:12px;margin-top:3px";
+      s.textContent = "Uden slug — kommer ikke med i udgivelsen";
+      c1.appendChild(s);
+    }
+
+    const c2 = document.createElement("td");
+    c2.textContent = FELT_NAVN[p.primary_field] || p.primary_field;
+    const c3 = document.createElement("td");
+    c3.textContent = p.duration_min;
+
+    const c4 = document.createElement("td");
+    if (p.eksponering && p.eksponering !== "ingen") {
+      const m = document.createElement("span");
+      m.className = "maerke indsendt";
+      m.textContent = p.eksponering.replace(/_/g, " ");
+      c4.appendChild(m);
+    } else {
+      c4.textContent = "—";
+    }
+
+    const c5 = document.createElement("td");
+    const m2 = document.createElement("span");
+    m2.className = "maerke " + (p.state === "approved" ? "godkendt" : "kladde");
+    m2.textContent = p.state === "approved" ? "Vises" : "Kladde";
+    c5.appendChild(m2);
+
+    const c6 = document.createElement("td");
+    const ret = document.createElement("button");
+    ret.className = "stille lille";
+    ret.textContent = "Ret";
+    ret.addEventListener("click", () => aabnRedigering(p));
+    c6.appendChild(ret);
+
+    tr.append(c1, c2, c3, c4, c5, c6);
+    tb.appendChild(tr);
+  }
+  t.appendChild(tb);
+  rod.appendChild(t);
+};
+
+$("k-felt").addEventListener("change", tegnKatalog);
+$("k-soeg").addEventListener("input", tegnKatalog);
+
+const visFolger = () => {
+  $("k-folger").textContent = EKSPONERING_FOLGER[$("k-eksponering").value] || "";
+  $("k-folger").className = "besked advarsel";
+};
+$("k-eksponering").addEventListener("change", visFolger);
+
+const aabnRedigering = (p) => {
+  retter = p.id;
+  $("k-redigering").classList.remove("skjult");
+  $("k-slug").textContent = p.slug ? "Kendes i appen som " + p.slug : "Uden slug — kan ikke udgives";
+  $("k-body").value = bodyFor(p);
+  $("k-varighed").value = p.duration_min;
+  $("k-intensitet").value = p.intensity;
+  $("k-eksponering").value = p.eksponering || "ingen";
+  $("k-social").value = p.social_setting || "alone";
+  $("k-cost").value = p.cost || "free";
+  $("k-kunfor").value = p.kun_for || "alle";
+  $("k-state").value = p.state === "approved" ? "approved" : "draft";
+  $("k-touch").checked = !!p.touch;
+  $("k-alcohol").checked = !!p.alcohol;
+  $("k-aften").checked = !!p.evening_safe;
+  $("k-mindre").checked = !!p.is_smaller_alternative;
+  $("k-ude").checked = !!p.outdoor;
+  $("k-dagslys").checked = !!p.needs_daylight;
+  visFolger();
+  vis($("k-gemfejl"), "");
+  $("k-redigering").scrollIntoView({ behavior: "smooth", block: "start" });
+};
+
+$("k-annuller").addEventListener("click", () => {
+  retter = null;
+  $("k-redigering").classList.add("skjult");
+});
+
+$("k-gem").addEventListener("click", async () => {
+  if (!retter) return;
+  vis($("k-gemfejl"), "");
+  try {
+    await kald("PATCH", "/katalog", {
+      id: retter,
+      body: $("k-body").value,
+      durationMin: Number($("k-varighed").value),
+      intensity: Number($("k-intensitet").value),
+      eksponering: $("k-eksponering").value,
+      socialSetting: $("k-social").value,
+      cost: $("k-cost").value,
+      kunFor: $("k-kunfor").value,
+      state: $("k-state").value,
+      touch: $("k-touch").checked,
+      alcohol: $("k-alcohol").checked,
+      eveningSafe: $("k-aften").checked,
+      isSmallerAlternative: $("k-mindre").checked,
+      outdoor: $("k-ude").checked,
+      needsDaylight: $("k-dagslys").checked,
+    });
+    retter = null;
+    $("k-redigering").classList.add("skjult");
+    vis($("katalogfejl"), "Gemt. Husk at udgive, før det når beboerne.", "ok");
+    await hentKatalog();
+  } catch (e) {
+    vis($("k-gemfejl"), e.message, "fejl");
+  }
+});
+
+$("k-body").addEventListener("input", () => {
+  const n = $("k-body").value.length;
+  $("k-tegn").textContent = n + " af 400 tegn." + (n > 360 ? " Tæt på grænsen." : "");
+});
+
+const saetKatalogKill = async (aktiv) => {
+  await kald("POST", "/katalog/killswitch", { aktiv });
+  vis($("k-udgivfejl"), aktiv
+    ? "Slået til igen. Udgiv, for at det når telefonerne."
+    : "Nødstop sat. Udgiv nu — først dér når det ud til dem, der allerede har kataloget.", "advarsel");
+  $("k-kill").classList.toggle("skjult", !aktiv);
+  $("k-killtil").classList.toggle("skjult", aktiv);
+};
+$("k-kill").addEventListener("click", () => {
+  if (confirm("Slå det hentede katalog fra? Alle falder tilbage til det indbyggede, når du har udgivet.")) {
+    saetKatalogKill(false);
+  }
+});
+$("k-killtil").addEventListener("click", () => saetKatalogKill(true));
+
+const opdaterKatalogTal = async () => {
+  const r = await kald("GET", "/katalog/forhaandsvis");
+  $("k-antal").textContent = (r.fil.poster || []).length;
+  if (r.problemer && r.problemer.length) {
+    vis($("k-udgivfejl"), "Kan ikke udgives endnu:\n" + r.problemer.join("\n"), "fejl");
+  } else {
+    const noter = [];
+    if (r.udenSlug) noter.push(r.udenSlug + " godkendte forslag mangler et slug og kommer ikke med.");
+    if (Array.isArray(r.advarsler)) noter.push(...r.advarsler);
+    vis($("k-udgivfejl"), noter.join("\n"), noter.length ? "advarsel" : "ok");
+  }
+  $("k-kill").classList.toggle("skjult", r.fil.aktiv === false);
+  $("k-killtil").classList.toggle("skjult", r.fil.aktiv !== false);
+  return r;
+};
+
+$("k-vis").addEventListener("click", async () => {
+  const r = await opdaterKatalogTal();
+  $("k-json").textContent = JSON.stringify(r.fil, null, 2);
+  $("k-json").classList.remove("skjult");
+});
+
+$("k-udgiv").addEventListener("click", async () => {
+  vis($("k-udgivfejl"), "");
+  $("k-udgiv").disabled = true;
+  try {
+    const r = await kald("POST", "/katalog/udgiv");
+    if (r.manuel) {
+      vis($("k-udgivfejl"), "Ingen GitHub-nøgle sat op. Hent filen nedenfor og læg den op selv.", "advarsel");
+      $("k-json").textContent = JSON.stringify(r.fil, null, 2);
+      $("k-json").classList.remove("skjult");
+    } else {
+      vis($("k-udgivfejl"), "Udgivet: " + r.antal + " forslag. Appen tager dem i brug ved næste start.", "ok");
+    }
+  } catch (e) {
+    vis($("k-udgivfejl"), e.message, "fejl");
+  } finally {
+    $("k-udgiv").disabled = false;
+  }
+});
+
+// ---------- opstart ----------
+const start = async () => {
+  $("login").classList.add("skjult");
+  $("app").classList.remove("skjult");
+  await hentAfdelinger();
+  await hentGodkend();
+};
+if (token) start().catch(() => logUd());
+</script>
+</body>
+</html>
