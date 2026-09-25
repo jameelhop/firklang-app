@@ -5,7 +5,7 @@
   "description": "Én lille ting ad gangen, fra det felt der har været koldest.",
   "lang": "da",
   "dir": "ltr",
-  "start_url": "./",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",

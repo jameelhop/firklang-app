@@ -173,54 +173,6 @@
    "durationMs": 1790
   },
   {
-   "id": "ud_alt-x-1",
-   "key": "ud_alt",
-   "variant": 1,
-   "lengthClass": null,
-   "audioPath": "cues/jeppe/breath_cue_ud_alt_01.m4a",
-   "durationMs": 1790
-  },
-  {
-   "id": "ud_alt-x-2",
-   "key": "ud_alt",
-   "variant": 2,
-   "lengthClass": null,
-   "audioPath": "cues/jeppe/breath_cue_ud_alt_02.m4a",
-   "durationMs": 1790
-  },
-  {
-   "id": "ud_alt-x-3",
-   "key": "ud_alt",
-   "variant": 3,
-   "lengthClass": null,
-   "audioPath": "cues/jeppe/breath_cue_ud_alt_03.m4a",
-   "durationMs": 1790
-  },
-  {
-   "id": "ud_alt-x-1",
-   "key": "ud_alt",
-   "variant": 1,
-   "lengthClass": null,
-   "audioPath": "cues/jeppe/breath_cue_ud_alt_01.m4a",
-   "durationMs": 1790
-  },
-  {
-   "id": "ud_alt-x-2",
-   "key": "ud_alt",
-   "variant": 2,
-   "lengthClass": null,
-   "audioPath": "cues/jeppe/breath_cue_ud_alt_02.m4a",
-   "durationMs": 1790
-  },
-  {
-   "id": "ud_alt-x-3",
-   "key": "ud_alt",
-   "variant": 3,
-   "lengthClass": null,
-   "audioPath": "cues/jeppe/breath_cue_ud_alt_03.m4a",
-   "durationMs": 1790
-  },
-  {
    "id": "ud_laengere-x-1",
    "key": "ud_laengere",
    "variant": 1,

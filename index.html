@@ -2,20 +2,50 @@
 <html lang="da">
   <head>
     <!--
+      charset skal staa foerst i head-elementet og inden for de foerste 1024
+      byte: det er HTML-standardens krav, og det er ogsaa det, browserens
+      forhaandsscanning af tegnsaet laeser foer noget andet. Kommentaren og
+      base-scriptet herunder er derfor flyttet ned under den - det aendrer
+      ingenting, DOM-opbygningen sker foerst naar dokumentet er parset
+      faerdigt, saa raekkefoelgen i kildeteksten er det eneste, der taeller.
+    -->
+    <meta charset="utf-8" />
+    <!--
       Basen goer alle relative stier (./sw.js, ./recipes.json, ./cues/...)
       uafhaengige af om siden aabnes med eller uden skraastreg. Noedvendigt
       fordi hopland.dk-proxyen normaliserer /firklang-app/ til /firklang-app,
       og en relativ sti derfra ellers ville ramme domaenets rod.
       Saettes dynamisk, saa en lokal dev-server i roden stadig virker.
+
+      Adressen /firklang-app (uden skraastreg) ligger uden for service
+      workerens scope /firklang-app/, saa siden bliver aldrig kontrolleret og
+      virker aldrig offline. Den skrives derfor om til /firklang-app/index.html,
+      som ligger inden for scope og ikke omdirigeres. replaceState er ingen
+      omdirigering - intet gaar til serveren - men det er den adresse, en
+      genindlaesning, et bogmaerke og iOS' "Foej til hjemmeskaerm" bruger.
+      En RIGTIG omdirigering til /firklang-app/ ville give et uendeligt loop,
+      fordi Next paa hopland.dk selv 308'er /firklang-app/ til /firklang-app.
+      Kun praecis den sti roeres; basen er sat foerst, saa appen starter,
+      ogsaa hvis replaceState kaster.
     -->
     <script>
       (function () {
         var b = document.createElement("base");
         b.href = location.pathname.indexOf("/firklang-app") === 0 ? "/firklang-app/" : "/";
         document.head.appendChild(b);
+        if (location.pathname === "/firklang-app") {
+          try {
+            history.replaceState(
+              history.state,
+              "",
+              "/firklang-app/index.html" + location.search + location.hash,
+            );
+          } catch (e) {
+            // Adressen forbliver /firklang-app; appen virker, bare ikke offline.
+          }
+        }
       })();
     </script>
-    <meta charset="utf-8" />
     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
     <!-- viewport-fit=cover, så det varme sorte går helt ud i kanten på iPhone -->
     <meta
@@ -87,6 +117,6 @@
         });
       }
     </script>
-  <script src="/firklang-app/_expo/static/js/web/index-7fe04749a491c9109d35b683beb0f699.js" defer></script>
+  <script src="/firklang-app/_expo/static/js/web/index-49bfd8cf19c59044055d981941cf0763.js" defer></script>
 </body>
 </html>
