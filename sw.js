@@ -25,7 +25,7 @@
 // og laa saa fast i den gamle cache paa ubestemt tid). Aendrer hashet sig
 // ikke, opdager browseren aldrig at der findes en ny service worker - det
 // var praecis fejlen der pinnede brugere til den version de foerst hentede.
-const CACHE_VERSION = "firklang-a134cdaf6ec9";
+const CACHE_VERSION = "firklang-930f94f8dceb";
 
 // "./" er bevidst IKKE med: hopland.dk 308'er /firklang-app/ til
 // /firklang-app (Next fjerner selv skråstregen), så den post blev altid en
@@ -43,7 +43,7 @@ const SKAL = [
 // den GAMLE worker og havner i den gamle cache, som activate straks sletter,
 // så den første offline-start efter en udgivelse blev en tom mørk skærm.
 const BUNDT = [
-  "./_expo/static/js/web/index-6fd5fa8c8ee62c8be91e55eefec7187a.js",
+  "./_expo/static/js/web/index-0b1cdf6bb694078908aa1a2ef1b121d4.js",
 ];
 
 // Selve app-siden: /firklang-app/ og /firklang-app/index.html (eller / og
